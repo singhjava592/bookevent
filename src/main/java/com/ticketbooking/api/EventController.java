@@ -8,7 +8,6 @@ import com.ticketbooking.service.AvailabilityService;
 import com.ticketbooking.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,10 +26,9 @@ public class EventController {
   }
 
   // POST /events: Create an event (name/date/location/totalSeats).
-  // ADMIN only.
+  // Open endpoint.
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  @PreAuthorize("hasRole('ADMIN')")
   public EventResponse create(@Valid @RequestBody CreateEventRequest req) {
     var e = new Event();
     e.setName(req.name());
@@ -51,9 +49,8 @@ public class EventController {
   }
 
   // PUT /events/{id}: Update event details.
-  // ADMIN only; 404 if event is soft-deleted.
+  // Open endpoint; 404 if event is soft-deleted.
   @PutMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
   public EventResponse update(@PathVariable long id, @Valid @RequestBody UpdateEventRequest req) {
     var patch = new Event();
     patch.setName(req.name());
@@ -66,10 +63,9 @@ public class EventController {
   }
 
   // DELETE /events/{id}: Soft-delete the event (kept for audit).
-  // ADMIN only; after delete, event behaves like 404.
+  // Open endpoint; after delete, event behaves like 404.
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  @PreAuthorize("hasRole('ADMIN')")
   public void delete(@PathVariable long id) {
     eventService.softDelete(id);
   }

@@ -27,48 +27,50 @@ mvn spring-boot:run
 
 Flyway will create tables automatically on startup.
 
-### Authentication (for now)
-To keep the focus on booking correctness, this project uses HTTP Basic with in-memory users:
-- **ADMIN**: `admin/admin`
-- **USER**: `user1/user1`
+### Authentication
+All APIs are currently **open** (no login/token required). For user-specific rules, requests include `userId`.
 
 ### Example API calls
 Create event (ADMIN):
 ```bash
-curl -u admin:admin -X POST http://localhost:8080/events \
+curl -X POST http://localhost:8080/events \
   -H 'Content-Type: application/json' \
   -d '{"name":"Concert","eventDate":"2026-05-01T18:00:00","location":"Bangalore","totalSeats":100}'
 ```
 
 Check availability:
 ```bash
-curl -u user1:user1 http://localhost:8080/events/1/availability
+curl http://localhost:8080/events/1/availability
 ```
 
 Hold seats (USER):
 ```bash
-curl -u user1:user1 -X POST http://localhost:8080/events/1/holds \
+curl -X POST http://localhost:8080/events/1/holds \
   -H 'Content-Type: application/json' \
-  -d '{"quantity":2}'
+  -d '{"userId":"user1","quantity":2}'
 ```
 
 Confirm booking using returned `holdId`:
 ```bash
-curl -u user1:user1 -X POST http://localhost:8080/holds/<holdId>/confirm
+curl -X POST http://localhost:8080/holds/<holdId>/confirm \
+  -H 'Content-Type: application/json' \
+  -d '{"userId":"user1"}'
 ```
 
 View booking:
 ```bash
-curl -u user1:user1 http://localhost:8080/bookings/<bookingId>
+curl http://localhost:8080/bookings/<bookingId>
 ```
 
 Cancel booking (soft cancel):
 ```bash
-curl -u user1:user1 -X POST http://localhost:8080/bookings/<bookingId>/cancel
+curl -X POST http://localhost:8080/bookings/<bookingId>/cancel \
+  -H 'Content-Type: application/json' \
+  -d '{"userId":"user1"}'
 ```
 
 Soft delete event (ADMIN):
 ```bash
-curl -u admin:admin -X DELETE http://localhost:8080/events/1
+curl -X DELETE http://localhost:8080/events/1
 ```
 
