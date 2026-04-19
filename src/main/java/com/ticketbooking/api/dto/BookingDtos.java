@@ -16,6 +16,8 @@ public class BookingDtos {
 
   public record CancelBookingRequest(@NotBlank String userId) {}
 
+  public record CancelBookingResponse(long bookingId, String message) {}
+
   public record BookingResponse(
       long bookingId,
       long eventId,

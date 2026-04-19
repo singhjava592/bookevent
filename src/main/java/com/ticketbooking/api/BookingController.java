@@ -61,9 +61,12 @@ public class BookingController {
   // POST /bookings/{bookingId}/cancel: Soft-cancel a confirmed booking (audit trail).
   // Seats become available again immediately.
   @PostMapping("/bookings/{bookingId}/cancel")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void cancel(@PathVariable long bookingId, @Valid @RequestBody CancelBookingRequest req) {
+  @ResponseStatus(HttpStatus.OK)
+  public CancelBookingResponse cancel(
+      @PathVariable long bookingId, @Valid @RequestBody CancelBookingRequest req) {
     bookingService.cancelBooking(bookingId, req.userId());
+    return new CancelBookingResponse(
+        bookingId, "Booking " + bookingId + " has been cancelled successfully.");
   }
 }
 

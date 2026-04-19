@@ -7,23 +7,21 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/ticket_booking?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true}
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    password: ${DB_PASSWORD:your_password}
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         jdbc:
           time_zone: UTC
-  flyway:
-    enabled: true
 
 app:
   holds:
     ttl-minutes: 5
-    max-quantity-per-hold: 10 # 0 means unlimited
+    max-quantity-per-hold: 0 # 0 means unlimited
   cache:
     availability-ttl-seconds: 2
   security:

@@ -2,28 +2,32 @@ package com.ticketbooking.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.Check;
 
 @Entity
-@Table(name = "events")
+@Table(
+    name = "events",
+    indexes = {@Index(name = "idx_events_status", columnList = "status")})
+@Check(constraints = "total_seats >= 0")
 public class Event {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 255)
   private String name;
 
   @Column(name = "event_date", nullable = false)
   private LocalDateTime eventDate;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 255)
   private String location;
 
   @Column(name = "total_seats", nullable = false)
   private int totalSeats;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(nullable = false, length = 32)
   private EventStatus status;
 
   @Column(name = "deleted_at")

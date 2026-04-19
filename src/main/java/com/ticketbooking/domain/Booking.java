@@ -2,9 +2,16 @@ package com.ticketbooking.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.Check;
 
 @Entity
-@Table(name = "bookings")
+@Table(
+    name = "bookings",
+    indexes = {
+      @Index(name = "idx_bookings_event_status", columnList = "event_id,status"),
+      @Index(name = "idx_bookings_user_event_status", columnList = "user_id,event_id,status")
+    })
+@Check(constraints = "quantity > 0")
 public class Booking {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +28,7 @@ public class Booking {
   private int quantity;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(nullable = false, length = 32)
   private BookingStatus status;
 
   @Column(name = "created_at", nullable = false)

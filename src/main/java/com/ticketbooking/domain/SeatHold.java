@@ -3,12 +3,19 @@ package com.ticketbooking.domain;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.hibernate.annotations.Check;
 
 @Entity
-@Table(name = "seat_holds")
+@Table(
+    name = "seat_holds",
+    indexes = {
+      @Index(name = "idx_holds_event_status_exp", columnList = "event_id,status,expires_at"),
+      @Index(name = "idx_holds_user_event_status", columnList = "user_id,event_id,status")
+    })
+@Check(constraints = "quantity > 0")
 public class SeatHold {
   @Id
-  @Column(length = 36)
+  @Column(name = "id", nullable = false, length = 36)
   private String id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -22,7 +29,7 @@ public class SeatHold {
   private int quantity;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(nullable = false, length = 32)
   private HoldStatus status;
 
   @Column(name = "expires_at", nullable = false)
