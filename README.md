@@ -1,36 +1,3 @@
-## Ticket Booking System (Backend API)
-
-Spring Boot + MySQL backend implementing a **hold-then-confirm** booking flow with **concurrency-safe capacity enforcement**.
-
-**Architecture (layers, flows, concurrency):** see [ARCHITECTURE.md](ARCHITECTURE.md).
-
-### Key behaviors
-- **Hold seats** for 5 minutes (returns `holdId`)
-- **Confirm booking** using `holdId`
-- **Expired holds** auto-marked as `EXPIRED` by a scheduled job
-- **Availability** = total - confirmed bookings - active holds
-- **Soft delete events** (deleted events behave like "not found")
-- **Soft cancel bookings** (`status=CANCELED`)
-- **High contention**: uses DB row lock on the event for hold/confirm, plus short-lived availability cache for read load
-
-### Prerequisites
-- Java 21
-- MySQL running locally
-
-Default DB config is in `src/main/resources/application.yml`:
-- DB: `ticket_booking`
-- User: `root`
-- Pass: `root`
-
-### Run
-```bash
-mvn spring-boot:run
-```
-
-Hibernate (`spring.jpa.hibernate.ddl-auto: update`) creates or updates tables from JPA entities on startup. For production, consider explicit schema management and setting `ddl-auto` to `validate` or `none`.
-
-### Authentication
-All APIs are currently **open** (no login/token required). For user-specific rules, requests include `userId`.
 
 ### Example API calls
 Create event (ADMIN):
